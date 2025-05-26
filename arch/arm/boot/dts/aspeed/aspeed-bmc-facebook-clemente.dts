@@ -50,14 +50,14 @@
 		i2c45 = &i2c0mux5ch1;
 		i2c46 = &i2c0mux5ch2;
 		i2c47 = &i2c0mux5ch3;
-		i2c48 = &i2c5mux0ch0;
-		i2c49 = &i2c5mux0ch1;
-		i2c50 = &i2c5mux0ch2;
-		i2c51 = &i2c5mux0ch3;
-		i2c52 = &i2c5mux0ch4;
-		i2c53 = &i2c5mux0ch5;
-		i2c54 = &i2c5mux0ch6;
-		i2c55 = &i2c5mux0ch7;
+		i2c48 = &i2c0mux0ch1mux0ch0;
+		i2c49 = &i2c0mux0ch1mux0ch1;
+		i2c50 = &i2c0mux0ch1mux0ch2;
+		i2c51 = &i2c0mux0ch1mux0ch3;
+		i2c52 = &i2c0mux3ch1mux0ch0;
+		i2c53 = &i2c5mux3ch1mux0ch1;
+		i2c54 = &i2c5mux3ch1mux0ch2;
+		i2c55 = &i2c5mux3ch1mux0ch3;
 	};
 
 	chosen {
@@ -235,6 +235,40 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <1>;
+
+			// HDDBOARD 0 FRU EEPROM
+			eeprom@56 {
+				compatible = "atmel,24c128";
+				reg = <0x56>;
+			};
+			i2c-mux@74 {
+				compatible = "nxp,pca9546";
+				reg = <0x74>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				i2c-mux-idle-disconnect;
+
+				i2c0mux0ch1mux0ch0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0>;
+				};
+				i2c0mux0ch1mux0ch1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <1>;
+				};
+				i2c0mux0ch1mux0ch2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <2>;
+				};
+				i2c0mux0ch1mux0ch3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <3>;
+				};
+			};
 		};
 		i2c0mux0ch2: i2c@2 {
 			#address-cells = <1>;
@@ -272,9 +306,9 @@
 			reg = <1>;
 
 			// IO Mezz 0 IOEXP
-			io_expander7: gpio@21 {
+			io_expander7: gpio@20 {
 				compatible = "nxp,pca9535";
-				reg = <0x21>;
+				reg = <0x20>;
 				gpio-controller;
 				#gpio-cells = <2>;
 			};
@@ -283,6 +317,12 @@
 			eeprom@50 {
 				compatible = "atmel,24c64";
 				reg = <0x50>;
+			};
+
+			// OSFP FRU EEPROM
+			eeprom@52 {
+				compatible = "atmel,24c128";
+				reg = <0x52>;
 			};
 		};
 		i2c0mux1ch2: i2c@2 {
@@ -348,6 +388,40 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <1>;
+
+			// HDDBOARD 1 FRU EEPROM
+			eeprom@56 {
+				compatible = "atmel,24c128";
+				reg = <0x56>;
+			};
+			i2c-mux@74 {
+				compatible = "nxp,pca9546";
+				reg = <0x74>;
+				#address-cells = <1>;
+				#size-cells = <0>;
+				i2c-mux-idle-disconnect;
+
+				i2c0mux3ch1mux0ch0: i2c@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0>;
+				};
+				i2c0mux3ch1mux0ch1: i2c@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <1>;
+				};
+				i2c0mux3ch1mux0ch2: i2c@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <2>;
+				};
+				i2c0mux3ch1mux0ch3: i2c@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <3>;
+				};
+			};
 		};
 		i2c0mux3ch2: i2c@2 {
 			#address-cells = <1>;
@@ -443,40 +517,96 @@
 &i2c1 {
 	status = "okay";
 
-	// HSC
+	// PDB HSC1
 	power-monitor@12 {
 		compatible = "ti,lm5066i";
 		reg = <0x12>;
 	};
 
-	// HSC
+	// PDB HSC2
 	power-monitor@14 {
 		compatible = "ti,lm5066i";
 		reg = <0x14>;
 	};
 
-	// HSC TEMP SENSOR
-	temperature-sensor@4a {
-		compatible = "ti,tmp461";
-		reg = <0x4a>;
+	// PDB HSC TEMP
+	temperature-sensor@4c {
+		compatible = "ti,tmp451";
+		reg = <0x4c>;
+		ti,extended-range-enable;
 	};
 
-	// HSC FRU EEPROM
-	eeprom@53 {
+	// PDB INLET TEMP
+	temperature-sensor@4e {
+		compatible = "ti,tmp1075";
+		reg = <0x4e>;
+	};
+
+	// PDB VR P12V N1
+	vrm@60 {
+		compatible = "isil,raa228004";
+		reg = <0x60>;
+	};
+
+	// PDB VR P12V N2
+	vrm@61 {
+		compatible = "isil,raa228004";
+		reg = <0x61>;
+	};
+
+	// PDB FRU EEPROM
+	eeprom@50 {
 		compatible = "atmel,24c02";
-		reg = <0x53>;
+		reg = <0x50>;
 	};
 
-    // CPU0 Leak sensor MAX1363
+    // CPU0 Leak sensor
 	Leak-sensor@34 {
 		compatible = "maxim,max1363";
 		reg = <0x34>;
 	};
+	leak-sensor0: adc@48 {
+		compatible = "ti,ads1015";
+		reg = <0x48>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
 
-    // CPU1 Leak sensor MAX1363
+    // CPU1 Leak sensor
 	Leak-sensor@35 {
 		compatible = "maxim,max1363";
 		reg = <0x35>;
+	};
+	leak-sensor1: adc@49 {
+		compatible = "ti,ads1015";
+		reg = <0x49>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	fanctl0: fan-controller@20{
+		compatible = "maxim,max31790";
+		reg = <0x20>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	fanctl1: fan-controller@23{
+		compatible = "maxim,max31790";
+		reg = <0x23>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	fanctl2: fan-controller@2c{
+		compatible = "maxim,max31790";
+		reg = <0x2c>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+	fanctl3: fan-controller@2f{
+		compatible = "maxim,max31790";
+		reg = <0x2f>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 	};
 
 	i2c-mux@70 {
@@ -491,9 +621,25 @@
 			#size-cells = <0>;
 			reg = <0x0>;
 
-			power-sensor@22 {
-				compatible = "mps,mp5990";
-				reg = <0x22>;
+			// INTERPOSER P12V NIC0
+			power-sensor@41 {
+				compatible = "ti,ina238";
+				reg = <0x41>;
+				shunt-resistor = <1000>;
+			};
+
+			// INTERPOSER P12V NIC1
+			power-sensor@42 {
+				compatible = "ti,ina238";
+				reg = <0x42>;
+				shunt-resistor = <1000>;
+			};
+
+			// INTERPOSER P12V SCM
+			power-sensor@44 {
+				compatible = "ti,ina238";
+				reg = <0x44>;
+				shunt-resistor = <1000>;
 			};
 		};
 		i2c1mux0ch1: i2c@1 {
@@ -505,35 +651,6 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x2>;
-
-			fanctl0: fan-controller@21{
-				compatible = "maxim,max31790";
-				reg = <0x21>;
-				#address-cells = <1>;
-				#size-cells = <0>;
-				channel@2 {
-					reg = <2>;
-					sensor-type = "TACH";
-				};
-				channel@5 {
-					reg = <5>;
-					sensor-type = "TACH";
-				};
-			};
-			fanctl1: fan-controller@27{
-				compatible = "maxim,max31790";
-				reg = <0x27>;
-				#address-cells = <1>;
-				#size-cells = <0>;
-				channel@2 {
-					reg = <2>;
-					sensor-type = "TACH";
-				};
-				channel@5 {
-					reg = <5>;
-					sensor-type = "TACH";
-				};
-			};
 		};
 		i2c1mux0ch3: i2c@3 {
 			#address-cells = <1>;
@@ -550,13 +667,13 @@
 			#size-cells = <0>;
 			reg = <0x5>;
 
-			// PDB FRU EEPROM
+			// INTERPOSER FRU EEPROM
 			eeprom@54 {
-				compatible = "atmel,24c64";
+				compatible = "atmel,24c128";
 				reg = <0x54>;
 			};
 
-			// PDB TEMP SENSOR
+			// INTERPOSER TEMP SENSOR
 			temperature-sensor@4f {
 				compatible = "ti,tmp75";
 				reg = <0x4f>;
@@ -567,32 +684,32 @@
 			#size-cells = <0>;
 			reg = <0x6>;
 
-			// PDB IOEXP
+			// INTERPOSER IOEXP
 			io_expander5: gpio@27 {
 				compatible = "nxp,pca9554";
 				reg = <0x27>;
 				gpio-controller;
 				#gpio-cells = <2>;
 			};
-
-			// OSFP IOEXP
-			io_expander6: gpio@25 {
-				compatible = "nxp,pca9555";
-				reg = <0x25>;
-				gpio-controller;
-				#gpio-cells = <2>;
-			};
-
-			// OSFP FRU EEPROM
-			eeprom@51 {
-				compatible = "atmel,24c64";
-				reg = <0x51>;
-			};
 		};
 		i2c1mux0ch7: i2c@7 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reg = <0x7>;
+
+			// INTERPOSER CABLE TSENSE NEGATIVE
+			power-sensor@42 {
+				compatible = "ti,ina238";
+				reg = <0x42>;
+				shunt-resistor = <1000>;
+			};
+
+			// INTERPOSER CABLE TSENSE POSITIVE
+			power-sensor@44 {
+				compatible = "ti,ina238";
+				reg = <0x44>;
+				shunt-resistor = <1000>;
+			};
 
 			// FIO FRU EEPROM
 			eeprom@51 {
@@ -636,14 +753,6 @@
 		#gpio-cells = <2>;
 	};
 
-	// HMC Expander @0x74
-	io_expander3: gpio@74 {
-		compatible = "nxp,pca9555";
-		reg = <0x74>;
-		gpio-controller;
-		#gpio-cells = <2>;
-	};
-
 	// Module 0 Aux EEPROM
 	eeprom@50 {
 		compatible = "atmel,24c64";
@@ -659,7 +768,6 @@
 
 &i2c3 {
 	status = "okay";
-
 };
 
 &i2c4 {
@@ -673,15 +781,17 @@
 &i2c6 {
 	status = "okay";
 
+	// BMC IOEXP on Module 0
+	io_expander3: gpio@21 {
+		compatible = "nxp,pca9555";
+		reg = <0x21>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
 	rtc@6f {
 		compatible = "nuvoton,nct3018y";
 		reg = <0x6f>;
-	};
-
-	// Interposer board EEPROM
-	eeprom@51 {
-		compatible = "atmel,24c64";
-		reg = <0x51>;
 	};
 };
 
@@ -722,7 +832,7 @@
 
 	// SCM FRU EEPROM
 	eeprom@50 {
-		compatible = "atmel,24c64";
+		compatible = "atmel,24c128";
 		reg = <0x50>;
 	};
 
@@ -764,79 +874,22 @@
 	status = "okay";
 	multi-master;
 
-	i2c-mux@70 {
-		compatible = "nxp,pca9548";
-		reg = <0x70>;
-		#address-cells = <1>;
-		#size-cells = <0>;
-		i2c-mux-idle-disconnect;
+	// Module 1 FRU EEPROM
+	eeprom@50 {
+		compatible = "atmel,24c64";
+		reg = <0x50>;
+	};
 
-		i2c5mux0ch0: i2c@0 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <0>;
-		};
-		i2c5mux0ch1: i2c@1 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <1>;
-		};
-		i2c5mux0ch2: i2c@2 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <2>;
-		};
-		i2c5mux0ch3: i2c@3 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <3>;
-		};
-		i2c5mux0ch4: i2c@4 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <4>;
-		};
-		i2c5mux0ch5: i2c@5 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <5>;
-		};
-		i2c5mux0ch6: i2c@6 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <6>;
-			// HDD FRU EEPROM
-			eeprom@56 {
-				compatible = "atmel,24c64";
-				reg = <0x56>;
-			};
-		};
-		i2c5mux0ch7: i2c@7 {
-			#address-cells = <1>;
-			#size-cells = <0>;
-			reg = <7>;
+	// Secondary CBC 0 FRU EEPROM
+	eeprom@54 {
+		compatible = "atmel,24c02";
+		reg = <0x54>;
+	};
 
-			power-sensor@40 {
-				compatible = "ti,ina230";
-				reg = <0x40>;
-				shunt-resistor = <2000>;
-			};
-			power-sensor@41 {
-				compatible = "ti,ina230";
-				reg = <0x41>;
-				shunt-resistor = <2000>;
-			};
-			power-sensor@44 {
-				compatible = "ti,ina230";
-				reg = <0x44>;
-				shunt-resistor = <2000>;
-			};
-			power-sensor@49 {
-				compatible = "ti,ina230";
-				reg = <0x49>;
-				shunt-resistor = <2000>;
-			};
-		};
+	// Secondary CBC 1 FRU EEPROM
+	eeprom@55 {
+		compatible = "atmel,24c02";
+		reg = <0x55>;
 	};
 };
 
@@ -844,31 +897,24 @@
 	status = "okay";
 	multi-master;
 
-	// HPM FRU EEPROM
+	// Module 0 FRU EEPROM
 	eeprom@50 {
 		compatible = "atmel,24c64";
 		reg = <0x50>;
 	};
-	// CBC 0 FRU
+
+	// Primary CBC 0 FRU EEPROM
 	eeprom@54 {
 		compatible = "atmel,24c02";
 		reg = <0x54>;
 	};
-	// CBC 1 FRU
+
+	// Primary CBC 1 FRU EEPROM
 	eeprom@55 {
 		compatible = "atmel,24c02";
 		reg = <0x55>;
 	};
-	// CBC 2 FRU
-	eeprom@56 {
-		compatible = "atmel,24c02";
-		reg = <0x56>;
-	};
-	// CBC 3 FRU
-	eeprom@58 {
-		compatible = "atmel,24c02";
-		reg = <0x58>;
-	};
+
 	// HMC FRU EEPROM
 	eeprom@57 {
 		compatible = "atmel,24c02";
